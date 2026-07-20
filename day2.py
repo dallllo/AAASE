@@ -2,7 +2,6 @@
 # ENTERPRISE AUTONOMOUS RESEARCH AI AGENT
 # ============================================================
 # Real Enterprise AI System using:
-#
 # - LangChain
 # - LangGraph
 # - OpenAI
@@ -18,9 +17,7 @@
 # ============================================================
 # INSTALL REQUIRED PACKAGES
 # ============================================================
-
 # Uncomment if needed
-
 # !pip install langchain
 # !pip install langgraph
 # !pip install langchain-openai
@@ -33,7 +30,6 @@
 # ============================================================
 # IMPORTS
 # ============================================================
-
 import os
 from typing import TypedDict, List, Dict
 from dotenv import load_dotenv
@@ -49,9 +45,7 @@ from datetime import datetime
 # ============================================================
 # LOAD ENVIRONMENT VARIABLES
 # ============================================================
-
 load_dotenv()
-
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
@@ -64,12 +58,6 @@ if TAVILY_API_KEY is None:
 # ============================================================
 # INITIALIZE LLM
 # ============================================================
-
-# llm = ChatOpenAI(
-#     model="gpt-4o-mini",
-#     temperature=0
-# )
-
 llm = ChatOpenAI(
     model="nvidia/nemotron-3-ultra-550b-a55b",
     temperature=0,
@@ -80,7 +68,6 @@ llm = ChatOpenAI(
 # ============================================================
 # SEARCH TOOL
 # ============================================================
-
 search_tool = TavilySearchResults(
     max_results=5
 )
@@ -89,7 +76,6 @@ search_tool = TavilySearchResults(
 # ============================================================
 # AGENT STATE
 # ============================================================
-
 class AgentState(TypedDict):
     topic: str
     collected_data: List[Dict]
@@ -101,7 +87,6 @@ class AgentState(TypedDict):
 # ============================================================
 # LOGGING FUNCTION
 # ============================================================
-
 def add_log(state, message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_message = f"[{timestamp}] {message}"
@@ -111,7 +96,6 @@ def add_log(state, message):
 # ============================================================
 # NODE 1 — RESEARCH COLLECTION
 # ============================================================
-
 def research_collection_node(state):
     add_log(state, "Starting autonomous research collection.")
     topic = state["topic"]
@@ -127,18 +111,13 @@ def research_collection_node(state):
 # ============================================================
 # NODE 2 — STORE MEMORY
 # ============================================================
-
 def memory_storage_node(state):
-
     add_log(state, "Skipping vector database (demo mode).")
-
     return state
-
 
 # ============================================================
 # NODE 3 — ANALYSIS
 # ============================================================
-
 def analysis_node(state):
     add_log(state, "Analyzing collected sources.")
     analyzed_results = []
@@ -168,11 +147,9 @@ def analysis_node(state):
     )
     return state
 
-
 # ============================================================
 # NODE 4 — QUALITY EVALUATION
 # ============================================================
-
 def quality_evaluation_node(state):
     add_log(state, "Evaluating research quality.")
     quality_prompt = f"""
@@ -195,11 +172,9 @@ def quality_evaluation_node(state):
     )
     return state
 
-
 # ============================================================
 # DYNAMIC ROUTING FUNCTION
 # ============================================================
-
 def dynamic_router(state):
     score = state["quality_score"]
     if score < 7:
@@ -209,11 +184,9 @@ def dynamic_router(state):
         print("Quality acceptable -> generating report.")
         return "report_generation"
 
-
 # ============================================================
 # NODE 5 — REPORT GENERATION
 # ============================================================
-
 def report_generation_node(state):
     add_log(state, "Generating enterprise research report.")
     report_prompt = f"""
@@ -236,21 +209,17 @@ def report_generation_node(state):
     add_log(state, "Final report generated.")
     return state
 
-
 # ============================================================
 # NODE 6 — AUDIT LOGGING
 # ============================================================
-
 def audit_node(state):
     add_log(state, "Enterprise audit completed.")
     add_log(state, "Workflow execution finished.")
     return state
 
-
 # ============================================================
 # BUILD LANGGRAPH WORKFLOW
 # ============================================================
-
 workflow = StateGraph(AgentState)
 workflow.add_node(
     "research_collection",
@@ -277,11 +246,9 @@ workflow.add_node(
     audit_node
 )
 
-
 # ============================================================
 # GRAPH EDGES
 # ============================================================
-
 workflow.set_entry_point("research_collection")
 workflow.add_edge(
     "research_collection",
@@ -312,17 +279,14 @@ workflow.add_edge(
     END
 )
 
-
 # ============================================================
 # COMPILE GRAPH
 # ============================================================
-
 app = workflow.compile()
 
 # ============================================================
 # INITIAL STATE
 # ============================================================
-
 initial_state = {
     "topic": "Enterprise Agentic AI Systems",
     "collected_data": [],
@@ -332,17 +296,14 @@ initial_state = {
     "quality_score": 0
 }
 
-
 # ============================================================
 # RUN ENTERPRISE AI AGENT
 # ============================================================
-
 final_state = app.invoke(initial_state)
 
 # ============================================================
 # DISPLAY FINAL REPORT
 # ============================================================
-
 print("\n")
 print("================================================")
 print("FINAL ENTERPRISE RESEARCH REPORT")
@@ -353,7 +314,6 @@ print(final_state["final_report"])
 # ============================================================
 # DISPLAY EXECUTION LOGS
 # ============================================================
-
 print("\n")
 print("================================================")
 print("EXECUTION LOGS")
